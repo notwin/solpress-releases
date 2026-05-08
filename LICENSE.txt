@@ -39,8 +39,13 @@
   · 偏好设置 / 会话状态 — 写入 macOS 标准 ~/Library/Containers/...
     沙盒目录，不离开本机。
 
-唯一的网络请求：启动时每天最多一次 GitHub Releases API 检查新版本（公开 API，
-不传任何个人信息）。可在「设置 → 启动行为 → 启动时检查更新」关闭。
+网络请求（仅以下两类，均不传任何个人信息）：
+
+  · 启动时每天最多一次 GitHub Releases API 检查新版本（公开 API）
+    可在「设置 → 启动行为 → 启动时检查更新」关闭。
+  · License 验证通过后从公开仓 raw URL fetch revocation-list.json
+    （license 吊销名单）。仅 GET 一个静态 JSON 文件，不传 UUID / 姓名 /
+    license 内容。30 天离线宽限期内 fetch 失败仍可继续使用。
 
 ▌ 5. 责任声明
 
@@ -58,8 +63,11 @@
 
 ▌ 6. License 撤销
 
-如发现 license 被泄露 / 滥用 / 转让，开发者保留在后续版本中**远程撤销
-该 license** 的权利。撤销后该 license 在新版本中无法激活。
+如发现 license 被泄露 / 滥用 / 转让，开发者保留**远程撤销该 license** 的权利。
+撤销机制：将 license 数字签名加入公开仓 revocation-list.json（含开发者 Ed25519
+签名防伪）。SolPress 启动时 fetch 该列表，licence 在列表内即拒绝启动。
+
+最长 30 天的离线宽限期：完全无网络环境下，已发吊销最长 30 天后才在该机器生效。
 
 ▌ 7. 协议变更
 
